@@ -1,0 +1,16 @@
+# Live runtime state — never commit your own
+**/status.json
+**/state.json
+**/revival-needed.json
+**/*.log
+**/*.jsonl
+**/flags/
+**/stop/
+**/launch.out
+**/ringkasan.md
+__pycache__/
+*.pyc
+.env
+*secret*
+*.pem
+*.key
