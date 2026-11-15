@@ -27,6 +27,20 @@ pages and 32 published actions:
 - **Terminal** — real bash sessions in tabs on persistent PTY daemons,
   with history and quick-command chips.
 
+**The bridge (`bridge/`)** — the two-way VNC stack behind the
+controller Space: an Xtigervnc desktop (1280×800), a frame/clipboard/
+input bridge holding one persistent RFB connection (latest frame
+cached as JPEG q70 — this is what makes it feel smooth), and a
+Playwright browser driver with a JSON control protocol (tabs,
+navigation, clicks, typing). Real code, not a spec — install it and
+the controller Space becomes fully interactive in both directions.
+
+**The controller Space (`space/PENGENDALI-VNC.md`)** — "Pengendali
+VNC": the VM desktop on your phone. Full frame, exactly two buttons
+(Copy, Paste), no keyboard button and no input field — double-tap a
+text field to type. Three actions only: `getframe`, `getclipboard`,
+`sendinput`.
+
 **The backend (`backend/`)** — plain Python, zero Muse tokens:
 
 - `fleet/` — a manifest-driven fleet checker: verifies every bot's
@@ -60,9 +74,25 @@ Hand this repo to your Muse and say:
 > Install VM Control from this repo: follow `install/SKILL.md`.
 
 The skill walks your Muse through installing the backend, proving it
-against your real bots, building the Space from `space/SPEC.md` +
-`space/BUILD-PROMPTS.md`, wiring the schedules, and verifying
-everything from inside the Space.
+against your real bots, installing the bridge and proving both
+directions, building the Spaces from `space/SPEC.md` +
+`space/BUILD-PROMPTS.md` + `space/PENGENDALI-VNC.md`, wiring the
+schedules, and verifying everything from inside the Spaces.
+
+## Installed it and it doesn't feel like the original?
+
+Two causes account for nearly every case:
+
+1. **The bridge is missing or dead.** The controller Space is a thin
+   client: frames and input both travel through `bridge/` on
+   127.0.0.1:5901. Without it the Space can at best show screenshots —
+   one-way and steppy. Check `curl -s http://127.0.0.1:5901/health`:
+   `seq` must keep increasing and `frame_age_ms` must stay low.
+2. **The Space drifted from its spec.** The Spaces are rebuilt by your
+   Muse from the specs in `space/`, so fidelity lives in following
+   them exactly — above all `PENGENDALI-VNC.md` (two buttons only, no
+   keyboard button, the gesture map, exactly three actions). Rebuild
+   the page from the spec rather than patching a drifted one.
 
 ## Design language
 
