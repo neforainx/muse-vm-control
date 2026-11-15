@@ -91,8 +91,11 @@ Two causes account for nearly every case:
 2. **The Space drifted from its spec.** The Spaces are rebuilt by your
    Muse from the specs in `space/`, so fidelity lives in following
    them exactly — above all `PENGENDALI-VNC.md` (two buttons only, no
-   keyboard button, the gesture map, exactly three actions). Rebuild
-   the page from the spec rather than patching a drifted one.
+   keyboard button, the gesture map, exactly three actions). For the
+   VM Control UI, build from `space/reference-ui.html` (the rendered
+   visual target) + `space/DESIGN-TOKENS.md`, and run the screenshot
+   comparison loop in `install/SKILL.md` until no deviations remain.
+   Rebuild a drifted page from the reference rather than patching it.
 
 ## Design language
 

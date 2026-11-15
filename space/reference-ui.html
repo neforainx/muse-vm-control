@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VM Control — UI Reference (visual source of truth)</title>
+<!--
+  VISUAL REFERENCE for the "VM control" Space in this repo.
+  This file is NOT the Space. It is the exact visual target: when you
+  build the web_fullstack Space, copy this shell's CSS tokens, layout
+  and component shapes verbatim, then wire the real actions (see
+  ACTIONS.md) behind it. Data below is fictional example data.
+  Verify your build by screenshotting every page next to this file
+  rendered at the same width — layout, spacing and glass must match.
+-->
+<style>
+  :root{
+    --bg:#0b0e14; --bg2:#11151d;
+    --glass:rgba(255,255,255,.08); --glass2:rgba(255,255,255,.05);
+    --stroke:rgba(255,255,255,.14);
+    --text:#f5f7fa; --muted:rgba(235,240,255,.55);
+    --blue:#0a84ff; --green:#30d158; --orange:#ff9f0a; --red:#ff453a; --teal:#64d2ff;
+    --card-r:22px; --pill-r:999px;
+    --blur:blur(22px) saturate(180%);
+    --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  [data-theme="light"]{
+    --bg:#eef0f4; --bg2:#e2e6ee;
+    --glass:rgba(255,255,255,.55); --glass2:rgba(255,255,255,.38);
+    --stroke:rgba(20,30,60,.10);
+    --text:#14181f; --muted:rgba(20,30,60,.52);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:linear-gradient(160deg,var(--bg),var(--bg2));
+    color:var(--text);min-height:100vh;padding:0 14px 120px}
+  /* ── top navbar: one long floating glass capsule ─────────────────── */
+  .topnav{position:sticky;top:12px;z-index:50;display:flex;align-items:center;gap:4px;
+    max-width:860px;margin:12px auto 18px;padding:6px;border-radius:var(--pill-r);
+    background:var(--glass);border:1px solid var(--stroke);
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:0 12px 32px rgba(0,0,0,.28)}
+  .topnav button{flex:1;border:0;background:transparent;color:var(--muted);
+    font:600 14px var(--font);padding:10px 4px;border-radius:var(--pill-r);cursor:pointer}
+  .topnav button.on{background:var(--glass);color:var(--text);
+    box-shadow:inset 0 0 0 1px var(--stroke)}
+  .topnav .toggle{flex:0 0 auto;width:42px;font-size:16px}
+  /* ── page scaffold ───────────────────────────────────────────────── */
+  .page{display:none;max-width:860px;margin:0 auto}
+  .page.on{display:block}
+  .grid{display:grid;gap:12px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:640px){.g3{grid-template-columns:1fr 1fr}}
+  .card{background:var(--glass2);border:1px solid var(--stroke);border-radius:var(--card-r);
+    padding:18px;backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur)}
+  .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .big{font-size:40px;font-weight:700;line-height:1.05;letter-spacing:-.01em}
+  .mid{font-size:22px;font-weight:700}
+  .small{font-size:12px;color:var(--muted)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--green);display:inline-block}
+  .dot.bad{background:var(--red)} .dot.warn{background:var(--orange)}
+  /* rings */
+  .rings{display:flex;gap:10px;justify-content:space-around;text-align:center}
+  .ring{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;
+    background:conic-gradient(var(--c) calc(var(--p)*1%),rgba(255,255,255,.10) 0)}
+  .ring i{width:70px;height:70px;border-radius:50%;background:var(--bg);
+    display:grid;place-items:center;font-style:normal;font-weight:700;font-size:17px}
+  .ring+.label{margin-top:8px}
+  /* lists */
+  .item{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--stroke)}
+  .item:last-child{border-bottom:0}
+  .item b{font-size:14px;font-weight:600}
+  .chip{font:600 11px var(--font);padding:4px 10px;border-radius:var(--pill-r);
+    background:var(--glass);border:1px solid var(--stroke);color:var(--muted)}
+  /* sub-navbar: floating pill at bottom, capsule ABOVE a 20px blur gradient */
+  .fadebar{position:fixed;left:0;right:0;bottom:0;height:20px;z-index:40;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    -webkit-mask-image:linear-gradient(to top,#000,transparent);
+            mask-image:linear-gradient(to top,#000,transparent)}
+  .subnav{position:fixed;left:50%;transform:translateX(-50%);bottom:34px;z-index:50;
+    display:flex;gap:4px;padding:5px;border-radius:var(--pill-r);
+    background:var(--glass);border:1px solid var(--stroke);
+    backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+    box-shadow:0 12px 32px rgba(0,0,0,.28)}
+  .subnav button{border:0;background:transparent;color:var(--muted);cursor:pointer;
+    font:600 13px var(--font);padding:8px 16px;border-radius:var(--pill-r)}
+  .subnav button.on{background:var(--glass);color:var(--text);box-shadow:inset 0 0 0 1px var(--stroke)}
+  /* office / terminal / frame placeholders keep the real pages' shapes */
+  .office{height:300px;border-radius:var(--card-r);display:grid;place-items:center;
+    background:linear-gradient(150deg,#cfd8ec,#aebadd 55%,#93a7cf);color:#2a3350}
+  [data-theme="dark"] .office{background:linear-gradient(150deg,#2c3550,#232c47 55%,#1b2340);color:#aebadd}
+  .term{background:#0a0c10;color:#c8f5d0;font:13px/1.55 var(--mono);border-radius:14px;
+    padding:14px;height:260px;overflow:hidden;white-space:pre-wrap}
+  .frame{aspect-ratio:1280/800;border-radius:14px;background:linear-gradient(140deg,#23304d,#141c2e);
+    display:grid;place-items:center;color:var(--muted);font-size:13px}
+  .bar{display:flex;gap:8px;margin-top:10px}
+  .bar button{flex:1;padding:12px;border-radius:14px;border:1px solid var(--stroke);
+    background:var(--glass);color:var(--text);font:600 14px var(--font);cursor:pointer}
+  .prog{height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
+  .prog i{display:block;height:100%;background:var(--green);border-radius:99px}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <button class="on" data-p="beranda">Beranda</button>
+  <button data-p="kantor">Kantor</button>
+  <button data-p="file">File</button>
+  <button data-p="terminal">Terminal</button>
+  <button class="toggle" id="themeBtn" title="Tema">◐</button>
+</nav>
+
+<!-- BERANDA ─────────────────────────────────────────────────────────── -->
+<section class="page on" id="beranda">
+  <div class="grid">
+    <div class="card row">
+      <div><div class="label">VM</div><div class="mid">my-vm · up 3h 12m</div></div>
+      <span class="chip"><span class="dot"></span> sehat</span>
+    </div>
+    <div class="card">
+      <div class="label" style="margin-bottom:12px">Sumber daya</div>
+      <div class="rings">
+        <div><div class="ring" style="--p:34;--c:var(--blue)"><i>34%</i></div><div class="label">CPU</div></div>
+        <div><div class="ring" style="--p:57;--c:var(--orange)"><i>57%</i></div><div class="label">RAM</div></div>
+        <div><div class="ring" style="--p:41;--c:var(--green)"><i>41%</i></div><div class="label">Disk</div></div>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><div class="label">Kas terkumpul</div><div class="big">Rp0</div>
+        <div class="small">target bulanan</div>
+        <div class="prog" style="margin-top:10px"><i style="width:2%"></i></div></div>
+      <div class="card"><div class="label">Fleet</div><div class="big">6/6</div>
+        <div class="small">semua fleet hidup</div></div>
+    </div>
+    <div class="card">
+      <div class="label" style="margin-bottom:6px">Fleet</div>
+      <div class="item"><span class="dot"></span><b>alpha-pipeline</b><span class="small" style="margin-left:auto">heartbeat 2 mnt</span></div>
+      <div class="item"><span class="dot"></span><b>beta-pipeline</b><span class="small" style="margin-left:auto">heartbeat 5 mnt</span></div>
+      <div class="item"><span class="dot warn"></span><b>gamma-pipeline</b><span class="small" style="margin-left:auto">heartbeat 26 mnt</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- KANTOR ──────────────────────────────────────────────────────────── -->
+<section class="page" id="kantor">
+  <div class="grid">
+    <div class="office"><div style="text-align:center"><div class="mid">Kantor 3D</div>
+      <div class="small" style="color:inherit;opacity:.7">bangunan L · warna soft · hanya agen aktif</div></div></div>
+    <div class="grid g3">
+      <div class="card"><div class="label">Pekerjaan</div><div class="big">128</div></div>
+      <div class="card"><div class="label">Selesai</div><div class="big">96</div></div>
+      <div class="card"><div class="label">Tertahan</div><div class="big">4</div></div>
+    </div>
+    <div class="card"><div class="label">Statistik</div>
+      <div class="item"><b>Web3 · Airdrop</b><span class="small" style="margin-left:auto">42 tugas</span></div>
+      <div class="item"><b>Web2 · Clipper</b><span class="small" style="margin-left:auto">17 tugas</span></div>
+      <div class="item"><b>—</b><span class="small" style="margin-left:auto">belum tercatat · sumber tidak terbaca</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FILE ────────────────────────────────────────────────────────────── -->
+<section class="page" id="file">
+  <div class="card">
+    <div class="row"><b style="font-size:15px">~/workspace</b><span class="chip">128 GB bebas</span></div>
+    <div class="item"><b>📁 tools</b><span class="small" style="margin-left:auto">folder</span></div>
+    <div class="item"><b>📁 your_files</b><span class="small" style="margin-left:auto">folder</span></div>
+    <div class="item"><b>📄 catatan.md</b><span class="small" style="margin-left:auto">4 KB</span></div>
+    <div class="item"><b>🔒 .ssh</b><span class="chip" style="margin-left:auto">ditolak · denylist</span></div>
+  </div>
+</section>
+
+<!-- TERMINAL ────────────────────────────────────────────────────────── -->
+<section class="page" id="terminal">
+  <div class="card">
+    <div class="row" style="margin-bottom:10px"><b style="font-size:15px">bash · sesi 1</b>
+      <span><span class="chip">ls</span> <span class="chip">status</span> <span class="chip">restart</span></span></div>
+    <div class="term">$ ls ~/workspace/tools
+fleet  reviver  analytics  bridge
+$ fleet_check.py
+all_fleets_ok = true
+$ █</div>
+    <div class="small" style="margin-top:10px">Sesi persisten — reload halaman tidak membunuh shell.</div>
+  </div>
+</section>
+
+<!-- PENGENDALI VNC (Space terpisah — bentuk halamannya) ─────────────── -->
+<section class="page" id="vnc">
+  <div class="frame">frame desktop 1280×800 · live</div>
+  <div class="bar"><button>Copy</button><button>Paste</button></div>
+  <div class="small" style="margin-top:8px;text-align:center">Hanya dua tombol ini. Tanpa tombol keyboard, tanpa kolom teks.</div>
+</section>
+
+<div class="fadebar"></div>
+<nav class="subnav" id="subnav">
+  <button class="on" data-p="beranda">Ringkasan</button>
+  <button data-p="vnc">Pengendali VNC</button>
+</nav>
+
+<script>
+  const pages=[...document.querySelectorAll('.page')];
+  function show(id){
+    pages.forEach(p=>p.classList.toggle('on',p.id===id));
+    document.querySelectorAll('.topnav button[data-p]').forEach(b=>b.classList.toggle('on',b.dataset.p===id));
+    document.querySelectorAll('#subnav button').forEach(b=>b.classList.toggle('on',b.dataset.p===id));
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.p)));
+  document.getElementById('themeBtn').addEventListener('click',()=>{
+    const h=document.documentElement;
+    h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';
+  });
+</script>
+</body>
+</html>

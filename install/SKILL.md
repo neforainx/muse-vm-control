@@ -104,10 +104,16 @@ feel interactive.
 ## 3. Build the Spaces
 
 Use the master build prompt in `space/BUILD-PROMPTS.md` with the
-artifact tools (`web_fullstack`, place it in the sidebar). Keep the
-design standard from `space/SPEC.md` exactly: Liquid Glass, top
-capsule navbar, bottom pill sub-navbars above a 20 px blur gradient,
-one shared dark/light toggle, no descriptive paragraphs.
+artifact tools (`web_fullstack`, place it in the sidebar). The visual
+target is `space/reference-ui.html` + `space/DESIGN-TOKENS.md` — copy
+the shell and tokens verbatim (Liquid Glass, top capsule navbar,
+bottom pill sub-navbars above a 20 px blur gradient, one shared
+dark/light toggle, no descriptive paragraphs). Then run the **visual
+QA loop**: screenshot every built page next to the same page of the
+reference at the same width, list deviations, fix, repeat until the
+list is empty. Do not report the Space done with deviations open —
+a UI that merely resembles the reference is the known failure mode
+of this install.
 
 If your user already has separate Office / File Manager / Terminal
 Spaces, merge in this order: build the combined Space with an

@@ -1,10 +1,31 @@
 # VM Control — build prompts
 
+## Before you build: the visual target is a file, not a description
+
+Open **`space/reference-ui.html`** (render it) and
+**`space/DESIGN-TOKENS.md`**. The reference file is the production
+UI's shell and page shapes rendered with example data. **Copy its CSS
+tokens, capsule navbars, card shapes and page layouts verbatim** into
+the Space you build, then wire the real actions behind them. A build
+that invents its own layout "in the same spirit" is a failed build —
+that is exactly how earlier installs ended up looking different from
+the original.
+
+After building, run the visual QA loop: screenshot every page of your
+Space and the same page of `reference-ui.html` at the same width,
+list every deviation (spacing, radius, blur, type sizes, missing or
+extra elements), fix, and repeat until the deviation list is empty.
+Report the final deviation list with your delivery — "looks similar"
+is not a pass.
+
 ## Master build prompt (paste this to your Muse)
 
 > Build a web_fullstack Space named "VM control" that merges a virtual
 > office, a file manager, and a VM terminal into one Space, plus a new
-> home page:
+> home page. Start from `space/reference-ui.html` in this repo: copy
+> its shell (top glass capsule navbar, bottom pill sub-navbars above
+> the 20 px blur gradient), its design tokens (`space/DESIGN-TOKENS.md`)
+> and its page layouts verbatim, and wire the actions behind them:
 >
 > - **Beranda (Home):** live VM status — host uptime, CPU/RAM/disk
 >   rings, bot-fleet health read from `~/workspace/tools/fleet/status.json`,
